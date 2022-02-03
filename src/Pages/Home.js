@@ -16,19 +16,28 @@ function Home() {
     let [results, setResults] = useState([]) // result state
 
     function makeList(res){
-        return res.map((value) => {
-            return (
-                <li>
 
-                </li>
-            )
-        })
+        const restaurantList = res.map(restaurant => <li key={restaurant.id}>{restaurant.alias}<br/><img src={restaurant.image_url}/></li>)
+
+        setResults(restaurantList)
+        // setResults(res.map((restaurant) => {
+        //     console.log(restaurant)
+        //     return (
+        //         <li>
+        //             {restaurant.alias}
+        //             <br/>
+        //             {restaurant.location.address1}
+        //         </li>
+        //     )
+        // }))
+        
     }
 
     function onSubmit(e){
         e.preventDefault() // prevent refresh
 
         if (zip.toString().length === 5) {
+            
             axios
             .get(
                 `${corsApiUrl}https://api.yelp.com/v3/businesses/search`,
@@ -39,14 +48,18 @@ function Home() {
                 },
                 params: {
                     location: {zip},
+                    radius : 40000
                 }
                 }
             )
             .then((res) =>
                 // dispatch({ type: 'ADD_RESTAURANTS', restaurants: res.data.businesses })
-                setResults(results)
+                makeList(res.data.businesses)
+                // console.log(res.data.businesses)
             )
             .catch((error) => console.log(error.response));
+        } else {
+            alert('Zipcode is invalid!')
         }
         
         console.log(zip)
@@ -64,7 +77,9 @@ function Home() {
                 <input name='Zipcode' placeholder='zipcode' type='number' value={zip} onChange={onChange}/>
                 <button type='submit' >submit</button>
             </form>
-            {results}
+            <ul className="RestaurantList">
+                {results}
+            </ul>
         </div>
     );
 }
