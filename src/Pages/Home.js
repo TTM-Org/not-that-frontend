@@ -1,6 +1,6 @@
 import '../Styles/Home/Home.scss';
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const corsApiUrl = 'https://cors-anywhere.herokuapp.com/'
 const axios = require('axios');
@@ -14,22 +14,49 @@ function Home() {
     
     let [zip, setZip] = useState('') // zipcode state for form submission
     let [results, setResults] = useState([]) // result state
+    let [categories, setCategories] = useState([])
+
+    function removeCategory(e){
+        e.preventDefault()
+
+        console.log(e.target.childNodes[0].childNodes[0])
+
+    }
+    
+    function removeDuplicates(entries){
+        const unique = {};
+
+        const originalEntries = [...entries];
+        for (const entry of originalEntries)
+        {
+            if (entry in unique){
+                const index = entries.indexOf(entry);
+                entries.splice(index, 1);
+                
+                continue;
+            }
+
+            unique[entry] = true;
+        }
+
+        return entries;
+    }
 
     function makeList(res){
 
-        const restaurantList = res.map(restaurant => <li key={restaurant.id}>{restaurant.alias}<br/><img src={restaurant.image_url}/></li>)
+        let categoryList = []
 
+        const restaurantList = res.map(restaurant => <li key={restaurant.id}>{restaurant.alias}<br/></li>)
+        res.map((restaurant) => {
+            restaurant.categories.forEach(element => {
+                categoryList.push({alias: element.alias, title: element.title})
+            });
+        })
+
+        categoryList = removeDuplicates(categoryList)
+
+        setCategories(categoryList.map(category => <li><button onClick={removeCategory}><span className='alias'>{category.alias}</span> {category.title}</button></li>))
         setResults(restaurantList)
-        // setResults(res.map((restaurant) => {
-        //     console.log(restaurant)
-        //     return (
-        //         <li>
-        //             {restaurant.alias}
-        //             <br/>
-        //             {restaurant.location.address1}
-        //         </li>
-        //     )
-        // }))
         
     }
 
@@ -44,18 +71,16 @@ function Home() {
                 {
                 headers: {
                     Authorization: `Bearer ${apiKey}`//,
-                    // Location: ''
                 },
                 params: {
                     location: {zip},
-                    radius : 40000
+                    radius : 40000,
+                    limit: 20
                 }
                 }
             )
             .then((res) =>
-                // dispatch({ type: 'ADD_RESTAURANTS', restaurants: res.data.businesses })
                 makeList(res.data.businesses)
-                // console.log(res.data.businesses)
             )
             .catch((error) => console.log(error.response));
         } else {
@@ -77,9 +102,10 @@ function Home() {
                 <input name='Zipcode' placeholder='zipcode' type='number' value={zip} onChange={onChange}/>
                 <button type='submit' >submit</button>
             </form>
-            <ul className="RestaurantList">
-                {results}
-            </ul>
+            <ol className="RestaurantList">
+                {/* {results} */}
+                {categories}
+            </ol>
         </div>
     );
 }
