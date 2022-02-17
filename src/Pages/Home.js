@@ -24,7 +24,7 @@ function Home() {
         let categoryName = e.target.innerText
         categories.splice(categories.indexOf(categoryName), 1)
 
-        setCategories(categoryList)
+        setCategories(categories)
     
     }
     
