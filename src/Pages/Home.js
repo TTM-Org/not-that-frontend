@@ -15,48 +15,33 @@ function Home() {
     let [zip, setZip] = useState('') // zipcode state for form submission
     let [results, setResults] = useState([]) // result state
     let [categories, setCategories] = useState([])
+    let [catDict, setCatDict] = useState()
+
 
     function removeCategory(e){
         e.preventDefault()
 
-        console.log(e.target.childNodes[0].childNodes[0])
+        let categoryName = e.target.innerText
+        categories.splice(categories.indexOf(categoryName), 1)
 
+        setCategories(categoryList)
+    
     }
     
-    function removeDuplicates(entries){
-        const unique = {};
-
-        const originalEntries = [...entries];
-        for (const entry of originalEntries)
-        {
-            if (entry in unique){
-                const index = entries.indexOf(entry);
-                entries.splice(index, 1);
-                
-                continue;
-            }
-
-            unique[entry] = true;
-        }
-
-        return entries;
-    }
 
     function makeList(res){
 
         let categoryList = []
 
-        const restaurantList = res.map(restaurant => <li key={restaurant.id}>{restaurant.alias}<br/></li>)
-        res.map((restaurant) => {
+        res.forEach((restaurant) => {
             restaurant.categories.forEach(element => {
-                categoryList.push({alias: element.alias, title: element.title})
+                categoryList.push(element.title)
             });
         })
 
-        categoryList = removeDuplicates(categoryList)
+        categoryList = [...new Set(categoryList)]
 
-        setCategories(categoryList.map(category => <li><button onClick={removeCategory}><span className='alias'>{category.alias}</span> {category.title}</button></li>))
-        setResults(restaurantList)
+        setCategories(categoryList)
         
     }
 
@@ -86,8 +71,6 @@ function Home() {
         } else {
             alert('Zipcode is invalid!')
         }
-        
-        console.log(zip)
     }
 
     function onChange(e){
@@ -103,8 +86,7 @@ function Home() {
                 <button type='submit' >submit</button>
             </form>
             <ol className="RestaurantList">
-                {/* {results} */}
-                {categories}
+                {categories.map(category => <li><button onClick={removeCategory}>{category}</button></li>)}
             </ol>
         </div>
     );
