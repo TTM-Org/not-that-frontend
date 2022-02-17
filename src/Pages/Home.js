@@ -12,10 +12,17 @@ const searchValues = {
 
 function Home() {
     
-    let [zip, setZip] = useState('') // zipcode state for form submission
-    let [results, setResults] = useState([]) // result state
-    let [categories, setCategories] = useState([])
-    let [catDict, setCatDict] = useState()
+    const [zip, setZip] = useState('') // zipcode state for form submission
+    const [results, setResults] = useState([]) // result state
+    const [categories, setCategories] = useState([])
+    const [catDict, setCatDict] = useState()
+
+    const [trigger, setTrigger] = useState(true)
+
+    useEffect(() => {
+        
+    }, [trigger])
+    
 
 
     function removeCategory(e){
@@ -25,6 +32,9 @@ function Home() {
         categories.splice(categories.indexOf(categoryName), 1)
 
         setCategories(categories)
+
+        setTrigger(!trigger)
+
     
     }
     
