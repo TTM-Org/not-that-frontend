@@ -62,7 +62,7 @@ function Home() {
         })
 
         setCategories(categoryList)
-        setBusinesses(biz)
+        setBusinesses(biz) 
 
     }
 
@@ -116,7 +116,9 @@ function Home() {
                 <button type='submit' >submit</button>
             </form>
             <ol className="RestaurantList">
-                {categories.map(category => <li><button onClick={(e) => removeCategory(e, category)}>{category[0]}</button></li>)}
+                {categories.map((category, index) => (
+                <li key={index}><button onClick={(e) => removeCategory(e, category)}>{category[0]}</button></li>
+                ))}
             </ol>
 
             <button onClick={onCategorySubmit} type='submit' >submit </button>
