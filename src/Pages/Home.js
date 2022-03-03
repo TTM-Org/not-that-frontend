@@ -13,14 +13,13 @@ const searchValues = {
 function Home() {
     
     const [zip, setZip] = useState('') // zipcode state for form submission
-    const [results, setResults] = useState([]) // result state
+    const [businesses, setBusinesses] = useState([])
     const [categories, setCategories] = useState([])
-    const [catDict, setCatDict] = useState()
 
     const [trigger, setTrigger] = useState(true)
 
     useEffect(() => {
-        
+        console.log(categories)
     }, [trigger])
     
 
@@ -32,7 +31,6 @@ function Home() {
         categories.splice(categories.indexOf(categoryName), 1)
 
         setCategories(categories)
-
         setTrigger(!trigger)
 
     
@@ -41,18 +39,34 @@ function Home() {
 
     function makeList(res){
 
+        let initCategoryList = []
         let categoryList = []
+        let biz = {}
 
         res.forEach((restaurant) => {
             restaurant.categories.forEach(element => {
+                biz[restaurant.id] = restaurant
+                // initCategoryList.push([element.title, restaurant.id])
                 categoryList.push(element.title)
             });
         })
 
+        // initCategoryList.forEach((element, index) => {
+        //     categoryList.forEach((element2) => {
+        //         if 
+        //     })
+        // })
+
         categoryList = [...new Set(categoryList)]
 
         setCategories(categoryList)
-        
+        setBusinesses(biz)
+
+        console.log(biz)
+    }
+
+    function onCategorySubmit(e){
+        console.log(categories, businesses)
     }
 
     function onSubmit(e){
@@ -74,9 +88,9 @@ function Home() {
                 }
                 }
             )
-            .then((res) =>
+            .then((res) => {
                 makeList(res.data.businesses)
-            )
+            })
             .catch((error) => console.log(error.response));
         } else {
             alert('Zipcode is invalid!')
@@ -87,7 +101,6 @@ function Home() {
         setZip(e.target.value)
     }
 
-    
 
     return (
         <div className="Home">
@@ -98,6 +111,8 @@ function Home() {
             <ol className="RestaurantList">
                 {categories.map(category => <li><button onClick={removeCategory}>{category}</button></li>)}
             </ol>
+
+            <button onClick={onCategorySubmit} type='submit' >submit </button>
         </div>
     );
 }
