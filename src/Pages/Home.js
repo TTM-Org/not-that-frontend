@@ -24,21 +24,22 @@ function Home() {
     
 
 
-    function removeCategory(e){
+    function removeCategory(e, category){
         e.preventDefault()
 
         let categoryName = e.target.innerText
-        categories.splice(categories.indexOf(categoryName), 1)
+        categories.forEach((element, index) => {
+            if (element[0] === categoryName) {return categories.splice(index, 1)}
+        })
 
         setCategories(categories)
         setTrigger(!trigger)
-
-    
     }
     
 
     function makeList(res){
 
+        let titleList = []
         let initCategoryList = []
         let categoryList = []
         let biz = {}
@@ -46,27 +47,33 @@ function Home() {
         res.forEach((restaurant) => {
             restaurant.categories.forEach(element => {
                 biz[restaurant.id] = restaurant
-                // initCategoryList.push([element.title, restaurant.id])
-                categoryList.push(element.title)
+                initCategoryList.push([element.title, restaurant.id])
+                // titleList.push(element.title)
+                // categoryList.push(element.title)
             });
         })
 
-        // initCategoryList.forEach((element, index) => {
-        //     categoryList.forEach((element2) => {
-        //         if 
-        //     })
-        // })
-
-        categoryList = [...new Set(categoryList)]
+        initCategoryList.forEach((element, index) => {
+            if (titleList.includes(element[0])){
+            } else {
+                titleList.push(element[0])
+                categoryList.push([element[0], element[1]])
+            }
+        })
 
         setCategories(categoryList)
         setBusinesses(biz)
 
-        console.log(biz)
     }
 
     function onCategorySubmit(e){
-        console.log(categories, businesses)
+        let display = []
+
+        categories.forEach((element) => {
+            display.push(businesses[element[1]])
+        })
+
+        setBusinesses(display)
     }
 
     function onSubmit(e){
@@ -109,7 +116,7 @@ function Home() {
                 <button type='submit' >submit</button>
             </form>
             <ol className="RestaurantList">
-                {categories.map(category => <li><button onClick={removeCategory}>{category}</button></li>)}
+                {categories.map(category => <li><button onClick={(e) => removeCategory(e, category)}>{category[0]}</button></li>)}
             </ol>
 
             <button onClick={onCategorySubmit} type='submit' >submit </button>
