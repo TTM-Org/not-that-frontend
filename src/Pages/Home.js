@@ -19,7 +19,7 @@ function Home() {
     const [trigger, setTrigger] = useState(true)
 
     useEffect(() => {
-        console.log(categories)
+        // console.log(categories)
     }, [trigger])
     
 
@@ -31,14 +31,12 @@ function Home() {
         categories.forEach((element, index) => {
             if (element[0] === categoryName) {return categories.splice(index, 1)}
         })
-
         setCategories(categories)
         setTrigger(!trigger)
     }
     
 
     function makeList(res){
-
         let titleList = []
         let initCategoryList = []
         let categoryList = []
@@ -46,6 +44,7 @@ function Home() {
 
         res.forEach((restaurant) => {
             restaurant.categories.forEach(element => {
+                console.table(biz)
                 biz[restaurant.id] = restaurant
                 initCategoryList.push([element.title, restaurant.id])
                 // titleList.push(element.title)
