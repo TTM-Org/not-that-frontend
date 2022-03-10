@@ -2,6 +2,7 @@ import '../Styles/Home/Home.scss';
 
 import { useEffect, useState } from 'react'
 
+
 const corsApiUrl = 'https://cors-anywhere.herokuapp.com/'
 const axios = require('axios');
 const apiKey = 'MnJ_QLBKGQO88Wst6Zv8i0_dwR35IHw6wkMM4SkkbqwVWCT3gK9D3TCWLEee-3jMLk-v8YPgJ6tF07WLf3e_zsgzjRzR8iWM669-sSAPepc4sGM8YQwL-iAAqOaXYXYx'
@@ -14,12 +15,13 @@ function Home() {
     
     const [zip, setZip] = useState('') // zipcode state for form submission
     const [businesses, setBusinesses] = useState([])
+    const [initCategories, setInitCategories] = useState([])
     const [categories, setCategories] = useState([])
 
     const [trigger, setTrigger] = useState(true)
 
     useEffect(() => {
-        console.log(categories)
+        // console.log(categories)
     }, [trigger])
     
 
@@ -48,10 +50,11 @@ function Home() {
             restaurant.categories.forEach(element => {
                 biz[restaurant.id] = restaurant
                 initCategoryList.push([element.title, restaurant.id])
-                // titleList.push(element.title)
-                // categoryList.push(element.title)
             });
         })
+        
+        setInitCategories(initCategoryList)
+        console.log(initCategoryList)
 
         initCategoryList.forEach((element, index) => {
             if (titleList.includes(element[0])){
@@ -69,8 +72,12 @@ function Home() {
     function onCategorySubmit(e){
         let display = []
 
-        categories.forEach((element) => {
-            display.push(businesses[element[1]])
+        categories.forEach((category) => {
+            initCategories.forEach((initCategory) => {
+                if (category[0] === initCategory[0]) {
+                    display.push(businesses[initCategory[1]])
+                }
+            })
         })
 
         setBusinesses(display)
