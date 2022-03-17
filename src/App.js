@@ -13,7 +13,7 @@ import Home from './Pages/Home'
 
 function App() {
   return (
-    <div className="App">
+    <div className="flex justify-center">
       <Routes>
         <Route exact path="/" element={<Home />} />
         {/* <Route path="invoices" element={<Invoices />} /> */}

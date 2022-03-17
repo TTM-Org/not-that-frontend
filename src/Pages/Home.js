@@ -1,6 +1,10 @@
 import '../Styles/Home/Home.scss';
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import Search from '../components/Search';
+import Categories from '../components/Categories';
+import Results from '../components/Results';
+
 
 const corsApiUrl = 'https://cors-anywhere.herokuapp.com/'
 const axios = require('axios');
@@ -12,25 +16,76 @@ const searchValues = {
 
 function Home() {
     
-    let [zip, setZip] = useState('') // zipcode state for form submission
-    let [results, setResults] = useState([]) // result state
+    const [zip, setZip] = useState('') // zipcode state for form submission
+    const [businesses, setBusinesses] = useState([])
+    const [initCategories, setInitCategories] = useState([])
+    const [categories, setCategories] = useState([])
+
+    const [trigger, setTrigger] = useState(true)
+
+    useEffect(() => {
+        // console.log(categories)
+    }, [trigger])
+    
+
+
+    function removeCategory(e, category){
+        e.preventDefault()
+
+        let categoryName = e.target.innerText
+        categories.forEach((element, index) => {
+            if (element[0] === categoryName) {return categories.splice(index, 1)}
+        })
+
+        setCategories(categories)
+        setTrigger(!trigger)
+    }
+    
 
     function makeList(res){
 
-        const restaurantList = res.map(restaurant => <li key={restaurant.id}>{restaurant.alias}<br/><img src={restaurant.image_url}/></li>)
+        let titleList = []
+        let initCategoryList = []
+        let categoryList = []
+        let biz = {}
 
-        setResults(restaurantList)
-        // setResults(res.map((restaurant) => {
-        //     console.log(restaurant)
-        //     return (
-        //         <li>
-        //             {restaurant.alias}
-        //             <br/>
-        //             {restaurant.location.address1}
-        //         </li>
-        //     )
-        // }))
+        res.forEach((restaurant) => {
+            restaurant.categories.forEach(element => {
+                biz[restaurant.id] = restaurant
+                initCategoryList.push([element.title, restaurant.id])
+            });
+        })
         
+        setInitCategories(initCategoryList)
+        console.log(initCategoryList)
+
+        initCategoryList.forEach((element, index) => {
+            if (titleList.includes(element[0])){
+            } else {
+                titleList.push(element[0])
+                categoryList.push([element[0], element[1]])
+            }
+        })
+
+        setCategories(categoryList)
+        setBusinesses(biz)
+        console.log(businesses)
+    }
+
+    function onCategorySubmit(e){
+        let display = []
+
+        categories.forEach((category) => {
+            initCategories.forEach((initCategory) => {
+                if (category[0] === initCategory[0]) {
+                    display.push(businesses[initCategory[1]])
+                }
+            })
+        })
+
+        setBusinesses(display)
+        // our results are stored in businesses
+        console.log(businesses)
     }
 
     function onSubmit(e){
@@ -44,42 +99,52 @@ function Home() {
                 {
                 headers: {
                     Authorization: `Bearer ${apiKey}`//,
-                    // Location: ''
                 },
                 params: {
                     location: {zip},
-                    radius : 40000
+                    radius : 40000,
+                    limit: 20
                 }
                 }
             )
-            .then((res) =>
-                // dispatch({ type: 'ADD_RESTAURANTS', restaurants: res.data.businesses })
+            .then((res) => {
                 makeList(res.data.businesses)
-                // console.log(res.data.businesses)
-            )
+            })
             .catch((error) => console.log(error.response));
         } else {
             alert('Zipcode is invalid!')
         }
-        
-        console.log(zip)
     }
 
     function onChange(e){
         setZip(e.target.value)
     }
 
-    
 
     return (
-        <div className="Home">
-            <form onSubmit={onSubmit}>
-                <input name='Zipcode' placeholder='zipcode' type='number' value={zip} onChange={onChange}/>
-                <button type='submit' >submit</button>
-            </form>
-            <ul className="RestaurantList">
-                {results}
-            </ul>
+        <div className="flex flex-col w-3/4 justify-center align-center text-center">
+            <Search />
+            <Categories />
+            <Results />
+
+            <div className='flex m-10 justify-center align-center '>
+                <form onSubmit={onSubmit}>
+                    <input className='bg-red-500 rounded-xl text-center placeholder:text-black placeholder:text-center px-4 py-2 focus:shadow-lg focus:outline-none' name='Zipcode' placeholder='Enter zipcode' type='numeric' value={zip} onChange={onChange}/>
+                    {/* <button type='submit' >submit</button> */}
+                </form>
+            </div>
+            <p>Select what you DON'T want.</p>
+            <ol className="flex flex-wrap justify-center align-center">
+                {categories.map((category, key) => <button key={key} className="flex justify-center align-center p-3 rounded-2xl text-white m-3 bg-red-500 " onClick={(e) => removeCategory(e, category)}><li>{category[0]}</li></button>)}
+            </ol>
+
+            <button className=' flex justify-center self-center bg-red-500 rounded-xl text-center placeholder:text-black placeholder:text-center px-4 py-2 w-1/6' onClick={onCategorySubmit} type='submit' >SUBMIT</button>
+            
+            {/* businesses turns into an object that we can not map over */}
+            {/* <ol className="flex flex-wrap justify-center align-center">
+                {businesses ? businesses.map((business, key) => <p key={key}>Business Card</p>) : ''}
+            </ol> */}
+
         </div>
     );
 }
