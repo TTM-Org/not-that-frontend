@@ -81,6 +81,7 @@ function Home() {
         })
 
         setBusinesses(display)
+        console.log(businesses)
     }
 
     function onSubmit(e){
@@ -123,7 +124,7 @@ function Home() {
                 <button type='submit' >submit</button>
             </form>
             <ol className="RestaurantList">
-                {categories.map(category => <li><button onClick={(e) => removeCategory(e, category)}>{category[0]}</button></li>)}
+                {categories.map((category, key) => <li key={key}><button onClick={(e) => removeCategory(e, category)}>{category[0]}</button></li>)}
             </ol>
 
             <button onClick={onCategorySubmit} type='submit' >submit </button>
