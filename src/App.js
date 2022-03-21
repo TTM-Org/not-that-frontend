@@ -1,25 +1,19 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
 
-import {
-  BrowserRouter,
-  Routes,
-  Route
-} from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // Pages
-import Home from './Pages/Home'
-
+import Home from "./Pages/Home";
 
 function App() {
-  return (
-    <div className="App">
-      <Routes>
-        <Route exact path="/" element={<Home />} />
-        {/* <Route path="invoices" element={<Invoices />} /> */}
-      </Routes>
-    </div>
-  );
+    return (
+        <div className="App">
+            <Routes>
+                <Route exact path="/" element={<Home />} />
+            </Routes>
+        </div>
+    );
 }
 
 export default App;

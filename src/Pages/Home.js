@@ -1,132 +1,140 @@
-import '../Styles/Home/Home.scss';
+import "../Styles/Home/Home.scss";
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react";
 
+// Cors & YELP API prereqs
+const corsApiUrl = "https://cors-anywhere.herokuapp.com/";
+const axios = require("axios");
+const apiKey =
+    "MnJ_QLBKGQO88Wst6Zv8i0_dwR35IHw6wkMM4SkkbqwVWCT3gK9D3TCWLEee-3jMLk-v8YPgJ6tF07WLf3e_zsgzjRzR8iWM669-sSAPepc4sGM8YQwL-iAAqOaXYXYx";
 
-const corsApiUrl = 'https://cors-anywhere.herokuapp.com/'
-const axios = require('axios');
-const apiKey = 'MnJ_QLBKGQO88Wst6Zv8i0_dwR35IHw6wkMM4SkkbqwVWCT3gK9D3TCWLEee-3jMLk-v8YPgJ6tF07WLf3e_zsgzjRzR8iWM669-sSAPepc4sGM8YQwL-iAAqOaXYXYx'
+// Creating Search Values
 const searchValues = {
-  location : '30052',
-  radius : 40000
-}
+    radius: 40000,
+    limit: 20,
+};
 
 function Home() {
-    
-    const [zip, setZip] = useState('') // zipcode state for form submission
-    const [businesses, setBusinesses] = useState([])
-    const [initCategories, setInitCategories] = useState([])
-    const [categories, setCategories] = useState([])
+    //-- States
+    const [zip, setZip] = useState("");
+    const [businesses, setBusinesses] = useState([]);
+    const [initCategories, setInitCategories] = useState([]);
+    const [categories, setCategories] = useState([]);
 
-    const [trigger, setTrigger] = useState(true)
+    const [trigger, setTrigger] = useState(true); // For Page Refresh
 
-    useEffect(() => {
-        // console.log(categories)
-    }, [trigger])
-    
+    useEffect(() => {}, [trigger]); // Triggering page refresh
 
+    function removeCategory(e, category) {
+        e.preventDefault();
 
-    function removeCategory(e, category){
-        e.preventDefault()
+        let categoryName = e.target.innerText;
 
-        let categoryName = e.target.innerText
         categories.forEach((element, index) => {
-            if (element[0] === categoryName) {return categories.splice(index, 1)}
-        })
+            if (element[0] === categoryName) {
+                return categories.splice(index, 1);
+            }
+        });
 
-        setCategories(categories)
-        setTrigger(!trigger)
+        setCategories(categories);
+        setTrigger(!trigger);
     }
-    
 
-    function makeList(res){
-
-        let titleList = []
-        let initCategoryList = []
-        let categoryList = []
-        let biz = {}
+    function makeList(res) {
+        let titleList = [];
+        let initCategoryList = [];
+        let categoryList = [];
+        let biz = {};
 
         res.forEach((restaurant) => {
-            restaurant.categories.forEach(element => {
-                biz[restaurant.id] = restaurant
-                initCategoryList.push([element.title, restaurant.id])
+            restaurant.categories.forEach((element) => {
+                biz[restaurant.id] = restaurant;
+                initCategoryList.push([element.title, restaurant.id]);
             });
-        })
-        
-        setInitCategories(initCategoryList)
-        console.log(initCategoryList)
+        });
+
+        setInitCategories(initCategoryList);
+        console.log(initCategoryList);
 
         initCategoryList.forEach((element, index) => {
-            if (titleList.includes(element[0])){
+            if (titleList.includes(element[0])) {
             } else {
-                titleList.push(element[0])
-                categoryList.push([element[0], element[1]])
+                titleList.push(element[0]);
+                categoryList.push([element[0], element[1]]);
             }
-        })
+        });
 
-        setCategories(categoryList)
-        setBusinesses(biz)
-
+        setCategories(categoryList);
+        setBusinesses(biz);
     }
 
-    function onCategorySubmit(e){
-        let display = []
+    function onCategorySubmit(e) {
+        let display = [];
 
         categories.forEach((category) => {
             initCategories.forEach((initCategory) => {
                 if (category[0] === initCategory[0]) {
-                    display.push(businesses[initCategory[1]])
+                    display.push(businesses[initCategory[1]]);
                 }
-            })
-        })
+            });
+        });
 
-        setBusinesses(display)
+        setBusinesses(display);
     }
 
-    function onSubmit(e){
-        e.preventDefault() // prevent refresh
+    function onSubmit(e) {
+        e.preventDefault(); // prevent refresh
 
         if (zip.toString().length === 5) {
-            
             axios
-            .get(
-                `${corsApiUrl}https://api.yelp.com/v3/businesses/search`,
-                {
-                headers: {
-                    Authorization: `Bearer ${apiKey}`//,
-                },
-                params: {
-                    location: {zip},
-                    radius : 40000,
-                    limit: 20
-                }
-                }
-            )
-            .then((res) => {
-                makeList(res.data.businesses)
-            })
-            .catch((error) => console.log(error.response));
+                .get(`${corsApiUrl}https://api.yelp.com/v3/businesses/search`, {
+                    headers: {
+                        Authorization: `Bearer ${apiKey}`, //,
+                    },
+                    params: {
+                        location: { zip },
+                        radius: searchValues.radius,
+                        limit: searchValues.limit,
+                    },
+                })
+                .then((res) => {
+                    makeList(res.data.businesses);
+                })
+                .catch((error) => console.log(error.response));
         } else {
-            alert('Zipcode is invalid!')
+            alert("Zipcode is invalid!");
         }
     }
 
-    function onChange(e){
-        setZip(e.target.value)
+    function onChange(e) {
+        setZip(e.target.value);
     }
-
 
     return (
         <div className="Home">
             <form onSubmit={onSubmit}>
-                <input name='Zipcode' placeholder='zipcode' type='number' value={zip} onChange={onChange}/>
-                <button type='submit' >submit</button>
+                <input
+                    name="Zipcode"
+                    placeholder="zipcode"
+                    type="number"
+                    value={zip}
+                    onChange={onChange}
+                />
+                <button type="submit">submit</button>
             </form>
             <ol className="RestaurantList">
-                {categories.map(category => <li><button onClick={(e) => removeCategory(e, category)}>{category[0]}</button></li>)}
+                {categories.map((category) => (
+                    <li>
+                        <button onClick={(e) => removeCategory(e, category)}>
+                            {category[0]}
+                        </button>
+                    </li>
+                ))}
             </ol>
 
-            <button onClick={onCategorySubmit} type='submit' >submit </button>
+            <button onClick={onCategorySubmit} type="submit">
+                submit{" "}
+            </button>
         </div>
     );
 }
