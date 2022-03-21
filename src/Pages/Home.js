@@ -1,6 +1,9 @@
 import "../Styles/Home/Home.scss";
 
 import { useEffect, useState } from "react";
+import Search from "../components/Search";
+import Categories from "../components/Categories";
+import Results from "../components/Results";
 
 // Cors & YELP API prereqs
 const corsApiUrl = "https://cors-anywhere.herokuapp.com/";
@@ -80,6 +83,8 @@ function Home() {
         });
 
         setBusinesses(display);
+        // our results are stored in businesses
+        console.log(businesses);
     }
 
     function onSubmit(e) {
@@ -111,30 +116,49 @@ function Home() {
     }
 
     return (
-        <div className="Home">
-            <form onSubmit={onSubmit}>
-                <input
-                    name="Zipcode"
-                    placeholder="zipcode"
-                    type="number"
-                    value={zip}
-                    onChange={onChange}
-                />
-                <button type="submit">submit</button>
-            </form>
-            <ol className="RestaurantList">
-                {categories.map((category) => (
-                    <li>
-                        <button onClick={(e) => removeCategory(e, category)}>
-                            {category[0]}
-                        </button>
-                    </li>
+        <div className="flex flex-col w-3/4 justify-center align-center text-center">
+            <Search />
+            <Categories />
+            <Results />
+
+            <div className="flex m-10 justify-center align-center ">
+                <form onSubmit={onSubmit}>
+                    <input
+                        className="bg-red-500 rounded-xl text-center placeholder:text-black placeholder:text-center px-4 py-2 focus:shadow-lg focus:outline-none"
+                        name="Zipcode"
+                        placeholder="Enter zipcode"
+                        type="numeric"
+                        value={zip}
+                        onChange={onChange}
+                    />
+                    {/* <button type='submit' >submit</button> */}
+                </form>
+            </div>
+            <p>Select what you DON'T want.</p>
+            <ol className="flex flex-wrap justify-center align-center">
+                {categories.map((category, key) => (
+                    <button
+                        key={key}
+                        className="flex justify-center align-center p-3 rounded-2xl text-white m-3 bg-red-500 "
+                        onClick={(e) => removeCategory(e, category)}
+                    >
+                        <li>{category[0]}</li>
+                    </button>
                 ))}
             </ol>
 
-            <button onClick={onCategorySubmit} type="submit">
-                submit{" "}
+            <button
+                className=" flex justify-center self-center bg-red-500 rounded-xl text-center placeholder:text-black placeholder:text-center px-4 py-2 w-1/6"
+                onClick={onCategorySubmit}
+                type="submit"
+            >
+                SUBMIT
             </button>
+
+            {/* businesses turns into an object that we can not map over */}
+            {/* <ol className="flex flex-wrap justify-center align-center">
+                {businesses ? businesses.map((business, key) => <p key={key}>Business Card</p>) : ''}
+            </ol> */}
         </div>
     );
 }
