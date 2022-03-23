@@ -4,7 +4,7 @@ import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // Pages
-import Home from "./Pages/Home";
+import Home from "./Pages/Home.tsx";
 
 function App() {
     return (
