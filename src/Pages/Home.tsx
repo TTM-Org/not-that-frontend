@@ -1,6 +1,7 @@
 import "../Styles/Home/Home.scss";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { CategoriesContext } from "../context/CategoriesContext";
 import Search from "../components/Search";
 import Categories from "../components/Categories";
 import Results from "../components/Results";
@@ -18,6 +19,8 @@ const searchValues: { radius: number; limit: number } = {
 };
 
 function Home() {
+    const { random, setRandom } = useContext(CategoriesContext)
+    console.log(random)
     //-- States
     const [zip, setZip] = useState("");
     const [businesses, setBusinesses] = useState([]);

@@ -1,6 +1,5 @@
 import '../Styles/Home/Home.scss';
-
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 import Search from '../components/Search';
 import Categories from '../components/Categories';
 import Results from '../components/Results';
@@ -24,7 +23,7 @@ function Home() {
     const [trigger, setTrigger] = useState(true)
 
     useEffect(() => {
-        // console.log(categories)
+        // console.log()
     }, [trigger])
     
 
