@@ -36,9 +36,10 @@ function Home() {
         categories.forEach((element, index) => {
             if (element[0] === categoryName) {return categories.splice(index, 1)}
         })
+        
 
-        setCategories(categories)
-        setTrigger(!trigger)
+        setCategories([...categories])
+        // setTrigger(!trigger)
     }
     
 
@@ -85,7 +86,7 @@ function Home() {
 
         setBusinesses(display)
         // our results are stored in businesses
-        console.log(businesses)
+        console.log('businesses, ', businesses)
     }
 
     function onSubmit(e){
