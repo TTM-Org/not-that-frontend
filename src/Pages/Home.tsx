@@ -19,8 +19,8 @@ const searchValues: { radius: number; limit: number } = {
 };
 
 function Home() {
-    const { random, setRandom } = useContext(CategoriesContext)
-    console.log(random)
+    const { state, dispatch } = useContext(CategoriesContext)
+    console.log(state, dispatch)
     //-- States
     const [zip, setZip] = useState("");
     const [businesses, setBusinesses] = useState([]);
@@ -71,6 +71,7 @@ function Home() {
 
         setCategories(categoryList);
         setBusinesses(biz);
+        dispatch({type: 'setBusinesses', payload: {businesses: biz}})
     }
 
     function onCategorySubmit(e) {
@@ -85,12 +86,15 @@ function Home() {
         });
 
         setBusinesses(display);
+        dispatch({type: 'setBusinesses', payload: {businesses: display}})
         // our results are stored in businesses
         console.log(businesses);
     }
 
     function onSubmit(e) {
         e.preventDefault(); // prevent refresh
+
+        console.log(state)
 
         if (zip.toString().length === 5) {
             axios
@@ -114,6 +118,7 @@ function Home() {
     }
 
     function onChange(e) {
+        dispatch({type: 'setZip', payload: {code: e.target.value}})
         setZip(e.target.value);
     }
 

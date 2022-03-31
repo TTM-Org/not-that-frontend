@@ -1,5 +1,5 @@
 import '../Styles/Home/Home.scss';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import Search from '../components/Search';
 import Categories from '../components/Categories';
 import Results from '../components/Results';
@@ -8,12 +8,10 @@ import Results from '../components/Results';
 const corsApiUrl = 'https://cors-anywhere.herokuapp.com/'
 const axios = require('axios');
 const apiKey = 'MnJ_QLBKGQO88Wst6Zv8i0_dwR35IHw6wkMM4SkkbqwVWCT3gK9D3TCWLEee-3jMLk-v8YPgJ6tF07WLf3e_zsgzjRzR8iWM669-sSAPepc4sGM8YQwL-iAAqOaXYXYx'
-const searchValues = {
-  location : '30052',
-  radius : 40000
-}
 
 function Home() {
+
+
     
     const [zip, setZip] = useState('') // zipcode state for form submission
     const [businesses, setBusinesses] = useState([])
@@ -112,7 +110,7 @@ function Home() {
 
     return (
         <div className="flex flex-col w-3/4 justify-center align-center text-center">
-            <Search />
+            {/* <Search /> */}
             <Categories />
             <Results />
 
