@@ -1,5 +1,5 @@
 import "./App.css";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { CategoriesContext } from "./context/CategoriesContext";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
