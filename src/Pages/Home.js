@@ -1,5 +1,5 @@
 import '../Styles/Home/Home.scss';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Search from '../components/Search';
 import Categories from '../components/Categories';
 import Results from '../components/Results';
@@ -19,15 +19,7 @@ function Home() {
     const [businesses, setBusinesses] = useState([])
     const [initCategories, setInitCategories] = useState([])
     const [categories, setCategories] = useState([])
-
-    const [trigger, setTrigger] = useState(true)
-
-    useEffect(() => {
-        // console.log()
-    }, [trigger])
     
-
-
     function removeCategory(e, category){
         e.preventDefault()
 
@@ -35,10 +27,7 @@ function Home() {
         categories.forEach((element, index) => {
             if (element[0] === categoryName) {return categories.splice(index, 1)}
         })
-        
-
         setCategories([...categories])
-        // setTrigger(!trigger)
     }
     
 
